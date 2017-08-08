@@ -78,15 +78,18 @@ AC_DEFINE_UNQUOTED(
   ["Pyflame $PACKAGE_VERSION (commit `cd $srcdir && git describe --always`) $host_os $host_cpu"],
   [A string containing build information.])
 
+enable_py27="no"
 PKG_CHECK_MODULES([PY26], [python2], [enable_py26="yes"], [AC_MSG_WARN([Building without Python 2.6/2.7 support])])
 AM_CONDITIONAL([ENABLE_PY26], [test x"$enable_py26" = xyes])
 AM_COND_IF([ENABLE_PY26], [AC_DEFINE([ENABLE_PY26], [1], [Python 2.6/2.7 will be enabled])])
 
+enable_py34="no"
 PKG_CHECK_MODULES([PY34], [python-3.4], [enable_py34="yes"],
                           [PKG_CHECK_MODULES([PY34], [python-3.5], [enable_py34="yes"], [AC_MSG_WARN([Building without Python 3.4/3.5 support])])])
 AM_CONDITIONAL([ENABLE_PY34], [test x"$enable_py34" = xyes])
 AM_COND_IF([ENABLE_PY34], [AC_DEFINE([ENABLE_PY34], [1], [Python 3.4/3.5 will be enabled])])
 
+enable_py36="no"
 PKG_CHECK_MODULES([PY36], [python-3.6], [enable_py36="yes"], [AC_MSG_WARN([Building without Python 3.6 support])])
 AM_CONDITIONAL([ENABLE_PY36], [test x"$enable_py36" = xyes])
 AM_COND_IF([ENABLE_PY36], [AC_DEFINE([ENABLE_PY36], [1], [Python 3.6 will be enabled])])
@@ -99,3 +102,14 @@ AS_IF([test x"$enable_py26" = xyes -o x"$enable_py34" = xyes -o x"$enable_py36" 
 AC_CONFIG_FILES([Makefile
                  src/Makefile])
 AC_OUTPUT
+
+echo
+echo "Options used to compile and link:"
+echo
+echo "  Python 2.6/2.7 support   = $enable_py26"
+echo "  Python 3.4/3.5 support   = $enable_py34"
+echo "  Python 3.6 support       = $enable_py36"
+echo
+echo "  CXX           = $CXX"
+echo "  CXXFLAGS      = $CXXFLAGS"
+echo
