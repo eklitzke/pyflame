@@ -68,4 +68,7 @@ script:
   - file ./src/pyflame
   - stat ./src/pyflame
   - stat ./runtests.sh
+  - which "${PYVERSION}"
+  - stat /usr/bin/"${PYVERSION}"
+  - find /usr -name "${PYVERSION}"
   - ./runtests.sh -xv /usr/bin/"${PYVERSION}"
