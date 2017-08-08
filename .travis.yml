@@ -70,5 +70,7 @@ script:
   - stat ./runtests.sh
   - which "${PYVERSION}"
   - stat /usr/bin/"${PYVERSION}"
-  - find /usr -name "${PYVERSION}"
+  - file /usr/bin/"${PYVERSION}"
+  - /usr/bin/"${PYVERSION}" --version
+  - find /usr -type f -executable -name "${PYVERSION}"
   - ./runtests.sh -xv /usr/bin/"${PYVERSION}"
