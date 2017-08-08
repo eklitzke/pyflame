@@ -66,4 +66,6 @@ script:
   - ./configure $CONFIGUREOPTS
   - make $MAKEOPTS
   - file ./src/pyflame
-  - ./runtests.sh -v /usr/bin/"${PYVERSION}"
+  - stat ./src/pyflame
+  - stat ./runtests.sh
+  - ./runtests.sh -xv /usr/bin/"${PYVERSION}"
