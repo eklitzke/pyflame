@@ -78,3 +78,14 @@ else
     run_pip_tests "$py"
   done
 fi
+
+case "$ARCH" in
+  i386)
+    export CFLAGS=-m32
+    export CXXFLAGS=-m32
+    export CONFIGUREOPTS="--host=i686-pc-linux-gnu"
+    ;;
+  aarch64)
+    export CONFIGUREOPTS="--host=aarch64-linux"
+    ;;
+esac
