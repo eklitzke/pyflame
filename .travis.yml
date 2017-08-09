@@ -66,4 +66,5 @@ script:
   - make $MAKEOPTS
   - file ./src/pyflame
   - which virtualenv
+  - echo "$PATH"
   - ./runtests.sh -vx /usr/bin/"${PYVERSION}"
