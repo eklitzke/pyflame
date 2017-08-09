@@ -45,8 +45,7 @@ addons:
     packages:
       - autotools-dev
       - pkg-config
-      - python-pytest
-      - python3-pytest
+      - python-virtualenv
 
 install:
   - sudo sysctl kernel.yama.ptrace_scope=0
@@ -68,4 +67,4 @@ script:
   - ./configure $CONFIGUREOPTS
   - make $MAKEOPTS
   - file ./src/pyflame
-  - /usr/bin/"${PYVERSION}" -m py.test -v tests/
+  - ./runtests.sh -vx
