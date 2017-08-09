@@ -43,7 +43,8 @@ addons:
     packages:
       - autotools-dev
       - pkg-config
-      - python-virtualenv
+      - python-pytest
+      - python3-pytest
 
 install:
   - sudo sysctl kernel.yama.ptrace_scope=0
@@ -72,4 +73,4 @@ script:
   - file /usr/bin/"${PYVERSION}"
   - /usr/bin/"${PYVERSION}" --version
   - find /usr -type f -executable -name "${PYVERSION}"
-  - ./runtests.sh -xv /usr/bin/"${PYVERSION}"
+  - "${PYVERSION}" -m pytest -v tests/
