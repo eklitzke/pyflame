@@ -47,7 +47,7 @@ install:
   - sudo sysctl kernel.yama.ptrace_scope=0
   - travis_retry sudo dpkg --add-architecture "$ARCH"
   - travis_retry sudo apt-get update
-  - travis_retry sudo apt-get install --reinstall autotools-dev pkg-config python-virtualenv "${PYVERSION}"{,-minimal,-dev}:"${ARCH}"
+  - travis_retry sudo apt-get install --reinstall autotools-dev pkg-config python-setuptools python-virtualenv "${PYVERSION}"{,-minimal,-dev}:"${ARCH}"
   - |
     if [ "$ARCH" == "i386" ]; then
       sudo apt-get install g++{,-multilib} pkg-config:"${ARCH}"
