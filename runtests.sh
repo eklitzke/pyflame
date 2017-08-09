@@ -48,7 +48,7 @@ run_pip_tests() {
   local activated=0
   if [ -z "${VIRTUAL_ENV}" ]; then
     rm -rf "${ENVDIR}"
-    virtualenv -v -p "$1" "${ENVDIR}"
+    /usr/bin/virtualenv -v -p "$1" "${ENVDIR}"
 
     # shellcheck source=/dev/null
     . "${ENVDIR}/bin/activate"
