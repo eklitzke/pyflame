@@ -40,10 +40,6 @@ addons:
   apt:
     sources:
       - sourceline: 'ppa:fkrull/deadsnakes'
-    packages:
-      - autotools-dev
-      - pkg-config
-      - python-virtualenv
 
 before_install:
   - export PATH=/usr/sbin:/usr/bin:/sbin:/bin
@@ -51,10 +47,10 @@ install:
   - sudo sysctl kernel.yama.ptrace_scope=0
   - travis_retry sudo dpkg --add-architecture "$ARCH"
   - travis_retry sudo apt-get update
-  - travis_retry sudo apt-get install "${PYVERSION}"{,-minimal,-dev}:"${ARCH}"
+  - travis_retry sudo apt-get install --reinstall autotools-dev pkg-config python-virtualenv "${PYVERSION}"{,-minimal,-dev}:"${ARCH}"
   - |
     if [ "$ARCH" == "i386" ]; then
-      sudo apt-get install g++{,-multilib} python-virtualenv pkg-config:"${ARCH}"
+      sudo apt-get install g++{,-multilib} pkg-config:"${ARCH}"
       export CFLAGS=-m32
       export CXXFLAGS=-m32
       export CONFIGUREOPTS="--host=i686-pc-linux-gnu"
