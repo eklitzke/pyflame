@@ -43,6 +43,7 @@ addons:
     packages:
       - autotools-dev
       - pkg-config
+      - python-virtualenv
 
 install:
   - sudo sysctl kernel.yama.ptrace_scope=0
