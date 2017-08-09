@@ -68,4 +68,4 @@ script:
   - ./configure $CONFIGUREOPTS
   - make $MAKEOPTS
   - file ./src/pyflame
-  - /usr/bin/"${PYVERSION}" -m pytest -v tests/
+  - /usr/bin/"${PYVERSION}" -m py.test -v tests/
