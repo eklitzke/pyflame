@@ -62,7 +62,16 @@ pyflame -o prof.txt -t py.test tests/
 
 In all of these cases you will get flame graph data on stdout (or to a file if
 you used `-o`). This data is in the format expected by `flamegraph.pl`, which
-you can find [here](https://github.com/brendangregg/FlameGraph).
+you can find [here](https://github.com/brendangregg/FlameGraph). A very simple
+pipeline would be like:
+
+```bash
+# Profile PID 12345 and generate an SVG flame graph
+pyflame -p 12345 | ./flamegraph.pl > prof-12345.svg
+
+# Open prof-12345.svg in Firefox (or Chrome)
+firefox ./prof-12345.svg
+```
 
 ## FAQ
 
