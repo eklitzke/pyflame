@@ -62,15 +62,27 @@ pyflame -o prof.txt -t py.test tests/
 
 In all of these cases you will get flame graph data on stdout (or to a file if
 you used `-o`). This data is in the format expected by `flamegraph.pl`, which
-you can find [here](https://github.com/brendangregg/FlameGraph). A very simple
-pipeline would be like:
+you can find [here](https://github.com/brendangregg/FlameGraph).
+
+#### Full Demo
+
+Here's an example of a very simple end-to-end demonstration, that you can use
+after building Pyflame from source:
 
 ```bash
-# Profile PID 12345 and generate an SVG flame graph
-pyflame -p 12345 | ./flamegraph.pl > prof-12345.svg
+# Build Pyflame from source
+./autogen.sh
+./configure
+make
 
-# Open prof-12345.svg in Firefox (or Chrome)
-firefox ./prof-12345.svg
+# Get a copy of flamegraph.pl
+git clone https://github.com/brendangregg/FlameGraph
+
+# Profile the dijkstra.py program included as a Pyflame test case
+./src/pyflame -t python tests/dijkstra.py -qn 1000 | ./FlameGraph/flamegraph.pl > out.svg
+
+# Open out.svg in Firefox; note that you can interact with the graph!
+firefox ./out.svg
 ```
 
 ## FAQ
