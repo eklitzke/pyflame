@@ -85,6 +85,10 @@ git clone https://github.com/brendangregg/FlameGraph
 firefox ./out.svg
 ```
 
+If you did everything correctly, the `out.svg` file should look
+something
+[like this](https://storage.googleapis.com/eklitzke-shared/dijkstra.svg).
+
 ## FAQ
 
 The full FAQ is [here](https://pyflame.readthedocs.io/en/latest/faq.html).
