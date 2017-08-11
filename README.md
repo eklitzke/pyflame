@@ -67,14 +67,10 @@ you can find [here](https://github.com/brendangregg/FlameGraph).
 #### Full Demo
 
 Here's a simple end-to-end demonstration, that you can use to generate a flame
-graph from one of the Python programs included in the Pyflame test suite:
+graph from one of the Python programs included in the Pyflame test suite. After
+building Pyflame with `make`, run:
 
 ```bash
-# Build Pyflame from source
-./autogen.sh
-./configure
-make
-
 # Get a copy of flamegraph.pl
 git clone https://github.com/brendangregg/FlameGraph
 
@@ -87,7 +83,11 @@ firefox ./out.svg
 
 If you did everything correctly, the `out.svg` file should look
 something
-[like this](https://storage.googleapis.com/eklitzke-shared/dijkstra.svg).
+[like this](https://storage.googleapis.com/eklitzke-shared/dijkstra.svg). Note
+that you can interact with the graph, by clicking on elements to zoom in on
+subcomponents, or by typing Ctrl-F to open up
+a
+[search dialog](http://www.brendangregg.com/blog/2015-08-11/flame-graph-search.html).
 
 ## FAQ
 
