@@ -66,8 +66,8 @@ you can find [here](https://github.com/brendangregg/FlameGraph).
 
 #### Full Demo
 
-Here's an example of a very simple end-to-end demonstration, that you can use
-after building Pyflame from source:
+Here's a simple end-to-end demonstration, that you can use to generate a flame
+graph from one of the Python programs included in the Pyflame test suite:
 
 ```bash
 # Build Pyflame from source
