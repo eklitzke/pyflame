@@ -91,3 +91,5 @@ Please include the following information in bug reports:
  * The version of the Python interpreter you are tracing
  * The exact error message displayed by Pyflame
  * If possible, a test script or way to reproduce the error.
+
+test
