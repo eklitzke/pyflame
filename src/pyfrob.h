@@ -23,7 +23,7 @@ namespace pyflame {
 
 // Get the threads. Each thread stack will be in reverse order (most recent
 // frame first).
-typedef std::vector<Thread> (*get_threads_t)(pid_t, PyAddresses, bool);
+using get_threads_t = std::vector<Thread> (*)(pid_t, PyAddresses, bool);
 
 // Frobber to get python stack stuff; this encapsulates all of the Python
 // interpreter logic.
@@ -37,7 +37,7 @@ class PyFrob {
   int DetectABI(PyABI abi);
 
   // Get the current frame list.
-  std::vector<Thread> GetThreads(void) const;
+  std::vector<Thread> GetThreads() const;
 
   // Useful when debugging.
   std::string Status() const;
@@ -46,7 +46,7 @@ class PyFrob {
   pid_t pid_;
   PyAddresses addrs_;
   bool enable_threads_;
-  get_threads_t get_threads_;
+  get_threads_t get_threads_{};
 
   // Fill the addrs_ member
   int set_addrs_(PyABI *abi);

@@ -237,7 +237,7 @@ void FollowFrame(pid_t pid, unsigned long frame, std::vector<Frame> *stack) {
       PtracePeek(pid, f_code + offsetof(PyCodeObject, co_name));
   const std::string name = StringData(pid, co_name);
 
-  stack->push_back({filename, name, GetLine(pid, frame, f_code)});
+  stack->emplace_back(filename, name, GetLine(pid, frame, f_code));
 
   const long f_back = PtracePeek(pid, frame + offsetof(_frame, f_back));
   if (f_back != 0) {
@@ -286,18 +286,18 @@ std::vector<Thread> GetThreads(pid_t pid, PyAddresses addrs,
   // Walk the thread list.
   std::vector<Thread> threads;
   while (tstate != 0) {
-    const unsigned long id =
+    unsigned long id =
         PtracePeek(pid, tstate + offsetof(PyThreadState, thread_id));
-    const bool is_current = tstate == current_tstate;
+    bool is_current = tstate == current_tstate;
 
     // Dereference the thread's current frame.
-    const unsigned long frame_addr = static_cast<unsigned long>(
+    auto frame_addr = static_cast<unsigned long>(
         PtracePeek(pid, tstate + offsetof(PyThreadState, frame)));
 
     std::vector<Frame> stack;
     if (frame_addr != 0) {
       FollowFrame(pid, frame_addr, &stack);
-      threads.push_back(Thread(id, is_current, stack));
+      threads.emplace_back(id, is_current, stack);
     }
 
     if (enable_threads) {

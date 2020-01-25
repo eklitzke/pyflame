@@ -57,18 +57,11 @@ enum class PyABI {
 
 // Symbols
 struct PyAddresses {
-  unsigned long tstate_addr;
-  unsigned long interp_head_addr;
-  unsigned long interp_head_fn_addr;
-  unsigned long interp_head_hint;
-  bool pie;
-
-  PyAddresses()
-      : tstate_addr(0),
-        interp_head_addr(0),
-        interp_head_fn_addr(0),
-        interp_head_hint(0),
-        pie(false) {}
+  unsigned long tstate_addr{};
+  unsigned long interp_head_addr{};
+  unsigned long interp_head_fn_addr{};
+  unsigned long interp_head_hint{};
+  bool pie{};
 
   PyAddresses operator-(const unsigned long base) const {
     PyAddresses res(*this);
@@ -94,20 +87,12 @@ struct PyAddresses {
   explicit operator bool() const { return !empty(); }
 
   // Empty means the struct hasn't been initialized.
-  inline bool empty() const { return this->tstate_addr == 0; }
+  bool empty() const { return this->tstate_addr == 0; }
 };
 
 // Representation of an ELF file.
 class ELF {
  public:
-  ELF()
-      : addr_(nullptr),
-        length_(0),
-        dynamic_(-1),
-        dynstr_(-1),
-        dynsym_(-1),
-        strtab_(-1),
-        symtab_(-1) {}
   ~ELF() { Close(); }
 
   // Open a file
@@ -130,15 +115,17 @@ class ELF {
   addr_t GetBaseAddress();
 
  private:
-  void *addr_;
-  size_t length_;
-  int dynamic_, dynstr_, dynsym_, strtab_, symtab_;
+  void *addr_{nullptr};
+  size_t length_{};
+  int dynamic_{-1};
+  int dynstr_{-1};
+  int dynsym_{-1};
+  int strtab_{-1};
+  int symtab_{-1};
 
-  inline const ehdr_t *hdr() const {
-    return reinterpret_cast<const ehdr_t *>(addr_);
-  }
+  const ehdr_t *hdr() const { return reinterpret_cast<const ehdr_t *>(addr_); }
 
-  inline const phdr_t *phdr(int idx) const {
+  const phdr_t *phdr(int idx) const {
     if (idx < 0) {
       std::ostringstream ss;
       ss << "Illegal phdr index: " << idx;
@@ -148,7 +135,7 @@ class ELF {
                                             idx * hdr()->e_phentsize);
   }
 
-  inline const shdr_t *shdr(int idx) const {
+  const shdr_t *shdr(int idx) const {
     if (idx < 0) {
       std::ostringstream ss;
       ss << "Illegal shdr index: " << idx;
@@ -158,16 +145,14 @@ class ELF {
                                             idx * hdr()->e_shentsize);
   }
 
-  inline unsigned long p() const {
-    return reinterpret_cast<unsigned long>(addr_);
-  }
+  unsigned long p() const { return reinterpret_cast<unsigned long>(addr_); }
 
-  inline const char *strtab(int offset) const {
+  const char *strtab(int offset) const {
     const shdr_t *strings = shdr(hdr()->e_shstrndx);
     return reinterpret_cast<const char *>(p() + strings->sh_offset + offset);
   }
 
-  inline const char *dynstr(int offset) const {
+  const char *dynstr(int offset) const {
     const shdr_t *strings = shdr(dynstr_);
     return reinterpret_cast<const char *>(p() + strings->sh_offset + offset);
   }

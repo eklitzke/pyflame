@@ -85,9 +85,8 @@ PyAddresses Addrs(pid_t pid, Namespace *ns, PyABI *abi) {
       std::string elf_path;
       const size_t offset = LocateLibPython(pid, exe, &elf_path);
       return addrs + offset;
-    } else {
-      return addrs;
     }
+    return addrs;
   }
 
   std::string libpython;
@@ -195,7 +194,7 @@ std::string PyFrob::Status() const {
   return line;
 }
 
-std::vector<Thread> PyFrob::GetThreads(void) const {
+std::vector<Thread> PyFrob::GetThreads() const {
   return get_threads_(pid_, addrs_, enable_threads_);
 }
 }  // namespace pyflame

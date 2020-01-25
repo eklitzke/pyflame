@@ -84,7 +84,7 @@ static const int build_abis[] = {
 
 static_assert(sizeof(build_abis) > 0, "No Python ABIs detected!");
 
-static inline void ShowVersion(std::ostream &out) {
+static void ShowVersion(std::ostream &out) {
   const size_t sz = sizeof(build_abis) / sizeof(int);
   out << PYFLAME_VERSION_STR << " (ABI list: ";
   for (size_t i = 0; i < sz - 1; i++) {
@@ -93,12 +93,11 @@ static inline void ShowVersion(std::ostream &out) {
   out << build_abis[sz - 1] << ")\n";
 }
 
-static inline std::chrono::microseconds ToMicroseconds(double val) {
+static std::chrono::microseconds ToMicroseconds(double val) {
   return std::chrono::microseconds{static_cast<long>(val * 1000000)};
 }
 
-static inline bool EndsWith(std::string const &value,
-                            std::string const &ending) {
+static bool EndsWith(std::string const &value, std::string const &ending) {
   if (ending.size() > value.size()) {
     return false;
   }
@@ -107,7 +106,7 @@ static inline bool EndsWith(std::string const &value,
 
 namespace pyflame {
 
-typedef std::unordered_map<frames_t, size_t, FrameHash> buckets_t;
+using buckets_t = std::unordered_map<frames_t, size_t, FrameHash>;
 
 // Prints all stack traces
 static void PrintFrames(std::ostream &out,
@@ -187,22 +186,22 @@ static void PrintFramesTS(std::ostream &out,
 int Prober::ParseOpts(int argc, char **argv) {
   static const char short_opts[] = "dhno:p:r:s:tvx";
   static struct option long_opts[] = {
-    {"abi", required_argument, 0, 'a'},
-    {"dump", no_argument, 0, 'd'},
-    {"help", no_argument, 0, 'h'},
-    {"rate", required_argument, 0, 'r'},
-    {"seconds", required_argument, 0, 's'},
+    {"abi", required_argument, nullptr, 'a'},
+    {"dump", no_argument, nullptr, 'd'},
+    {"help", no_argument, nullptr, 'h'},
+    {"rate", required_argument, nullptr, 'r'},
+    {"seconds", required_argument, nullptr, 's'},
 #if ENABLE_THREADS
-    {"threads", no_argument, 0, 'L'},
+    {"threads", no_argument, nullptr, 'L'},
 #endif
-    {"no-line-numbers", no_argument, 0, 'n'},
-    {"output", required_argument, 0, 'o'},
-    {"pid", required_argument, 0, 'p'},
-    {"trace", no_argument, 0, 't'},
-    {"flamechart", no_argument, 0, 'T'},
-    {"version", no_argument, 0, 'v'},
-    {"exclude-idle", no_argument, 0, 'x'},
-    {0, 0, 0, 0}
+    {"no-line-numbers", no_argument, nullptr, 'n'},
+    {"output", required_argument, nullptr, 'o'},
+    {"pid", required_argument, nullptr, 'p'},
+    {"trace", no_argument, nullptr, 't'},
+    {"flamechart", no_argument, nullptr, 'T'},
+    {"version", no_argument, nullptr, 'v'},
+    {"exclude-idle", no_argument, nullptr, 'x'},
+    {nullptr, 0, nullptr, 0}
   };
 
   long abi_version;
@@ -293,10 +292,12 @@ finish_arg_parse:
     if (dump_) {
       std::cerr << "Options -t and -d are not mutually compatible.\n";
       return 1;
-    } else if (pid_ != -1) {
+    }
+    if (pid_ != -1) {
       std::cerr << "Options -t and -p are not mutually compatible.\n";
       return 1;
-    } else if (optind == argc) {
+    }
+    if (optind == argc) {
       std::cerr << "Option -t requires a command to run.\n\n";
       std::cerr << usage_str;
       return 1;
@@ -330,7 +331,8 @@ int Prober::InitiatePtrace(char **argv) {
     if (pid_ == -1) {
       perror("fork()");
       return 1;
-    } else if (pid_ == 0) {
+    }
+    if (pid_ == 0) {
       // Child: request to be traced.
       PtraceTraceme();
       if (execvp(trace_target_.c_str(), argv + optind)) {
@@ -416,12 +418,12 @@ int Prober::ProbeLoop(const PyFrob &frobber, std::ostream *out) {
         // Timestamp empty call stacks only if required. Since lots of time the
         // process will be idle, this is a good optimization to have.
         if (include_ts_) {
-          call_stacks.push_back({now, {}});
+          call_stacks.emplace_back(now);
         }
       }
 
       for (const auto &thread : threads) {
-        call_stacks.push_back({now, thread.frames()});
+        call_stacks.emplace_back(now, thread.frames());
       }
 
       if (check_end && (now + interval_ >= end)) {
@@ -438,7 +440,8 @@ int Prober::ProbeLoop(const PyFrob &frobber, std::ostream *out) {
       failed_count++;
       if (include_ts_) {
         // include the exact failures in the call stacks
-        call_stacks.push_back({now, {{"(failed)", exc.what(), 0}}});
+        call_stacks.emplace_back(now,
+                                 frames_t{Frame{"(failed)", exc.what(), 0}});
       }
       std::cerr << "Unexpected ptrace(2) exception: " << exc.what() << "\n";
     } catch (const std::exception &exc) {
@@ -457,7 +460,7 @@ finish:
     }
   }
   return return_code;
-}
+}  // namespace pyflame
 
 int Prober::DumpStacks(const PyFrob &frobber, std::ostream *out) {
   std::vector<Thread> threads = frobber.GetThreads();

@@ -24,9 +24,7 @@
 #include "./config.h"
 
 #if defined(__arm__)
-typedef struct user_regs user_regs_struct;
-#else
-typedef struct user_regs_struct user_regs_struct;
+using user_regs_struct = struct user_regs;
 #endif
 
 namespace pyflame {

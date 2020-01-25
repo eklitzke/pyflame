@@ -29,16 +29,15 @@ namespace pyflame {
 class Frame {
  public:
   Frame() = delete;
-  Frame(const Frame &other)
-      : file_(other.file_), name_(other.name_), line_(other.line_) {}
-  Frame(const std::string &file, const std::string &name, size_t line)
-      : file_(file), name_(name), line_(line) {}
+  Frame(const Frame &other) = default;
+  Frame(std::string file, std::string name, size_t line)
+      : file_(std::move(file)), name_(std::move(name)), line_(line) {}
 
-  inline const std::string &file() const { return file_; }
-  inline const std::string &name() const { return name_; }
-  inline size_t line() const { return line_; }
+  const std::string &file() const { return file_; }
+  const std::string &name() const { return name_; }
+  size_t line() const { return line_; }
 
-  inline bool operator==(const Frame &other) const {
+  bool operator==(const Frame &other) const {
     return file_ == other.file_ && line_ == other.line_;
   }
 
@@ -52,8 +51,8 @@ std::ostream &operator<<(std::ostream &os, const Frame &frame);
 void print_frame(std::ostream &os, const Frame &frame);
 void print_frame_without_line_number(std::ostream &os, const Frame &frame);
 
-typedef void (*print_frame_t)(std::ostream &, const Frame &);
-typedef std::vector<Frame> frames_t;
+using print_frame_t = void (*)(std::ostream &, const Frame &);
+using frames_t = std::vector<Frame>;
 
 struct FrameHash {
   size_t operator()(const frames_t &frames) const {
@@ -67,6 +66,9 @@ struct FrameHash {
 };
 
 struct FrameTS {
+  explicit FrameTS(const std::chrono::system_clock::time_point ts) : ts(ts) {}
+  FrameTS(const std::chrono::system_clock::time_point ts, frames_t frames)
+      : ts(ts), frames(std::move(frames)) {}
   std::chrono::system_clock::time_point ts;
   frames_t frames;
 };

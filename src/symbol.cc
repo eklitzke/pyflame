@@ -99,9 +99,11 @@ void ELF::Parse() {
   }
   if (dynamic_ == -1) {
     throw FatalException("Failed to find section .dynamic");
-  } else if (dynstr_ == -1) {
+  }
+  if (dynstr_ == -1) {
     throw FatalException("Failed to find section .dynstr");
-  } else if (dynsym_ == -1) {
+  }
+  if (dynsym_ == -1) {
     throw FatalException("Failed to find section .dynsym");
   }
 }
@@ -112,10 +114,10 @@ std::vector<std::string> ELF::NeededLibs() {
   const shdr_t *s = shdr(dynamic_);
   const shdr_t *d = shdr(dynstr_);
   for (uint16_t i = 0; i < s->sh_size / s->sh_entsize; i++) {
-    const dyn_t *dyn =
+    auto dyn =
         reinterpret_cast<const dyn_t *>(p() + s->sh_offset + i * s->sh_entsize);
     if (dyn->d_tag == DT_NEEDED) {
-      needed.push_back(
+      needed.emplace_back(
           reinterpret_cast<const char *>(p() + d->sh_offset + dyn->d_un.d_val));
     }
   }
@@ -133,9 +135,9 @@ PyABI ELF::WalkTable(int sym, int str, PyAddresses *addrs) {
       break;
     }
 
-    const sym_t *sym =
+    auto sym =
         reinterpret_cast<const sym_t *>(p() + s->sh_offset + i * s->sh_entsize);
-    const char *name =
+    auto name =
         reinterpret_cast<const char *>(p() + d->sh_offset + sym->st_name);
     if (!addrs->tstate_addr && strcmp(name, "_PyThreadState_Current") == 0) {
       addrs->tstate_addr = static_cast<unsigned long>(sym->st_value);

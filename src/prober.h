@@ -30,17 +30,7 @@ namespace pyflame {
 
 class Prober {
  public:
-  Prober()
-      : abi_(PyABI::Unknown),
-        pid_(-1),
-        dump_(false),
-        trace_(false),
-        include_idle_(true),
-        include_ts_(false),
-        include_line_number_(true),
-        enable_threads_(false),
-        seconds_(1),
-        sample_rate_(0.01) {}
+  Prober() = default;
   Prober(const Prober &other) = delete;
 
   int ParseOpts(int argc, char **argv);
@@ -51,31 +41,31 @@ class Prober {
 
   int Run(const PyFrob &frobber);
 
-  inline bool enable_threads() const { return enable_threads_; }
-  inline pid_t pid() const { return pid_; }
+  bool enable_threads() const { return enable_threads_; }
+  pid_t pid() const { return pid_; }
 
  private:
-  PyABI abi_;
-  pid_t pid_;
-  bool dump_;
-  bool trace_;
-  bool include_idle_;
-  bool include_ts_;
-  bool include_line_number_;
-  bool enable_threads_;
-  double seconds_;
-  double sample_rate_;
+  PyABI abi_{PyABI::Unknown};
+  pid_t pid_{-1};
+  bool dump_{false};
+  bool trace_{false};
+  bool include_idle_{true};
+  bool include_ts_{false};
+  bool include_line_number_{true};
+  bool enable_threads_{true};
+  double seconds_{1.0};
+  double sample_rate_{0.01};
   std::chrono::microseconds interval_;
   std::string output_file_;
   std::string trace_target_;
 
-  pid_t ParsePid(const char *pid_str);
-
   int ProbeLoop(const PyFrob &frobber, std::ostream *out);
 
-  int DumpStacks(const PyFrob &frobber, std::ostream *out);
+  static pid_t ParsePid(const char *pid_str);
 
-  inline size_t MaxRetries() const {
+  static int DumpStacks(const PyFrob &frobber, std::ostream *out);
+
+  size_t MaxRetries() const {
     return trace_ ? MAX_TRACE_RETRIES : MAX_ATTACH_RETRIES;
   }
 };

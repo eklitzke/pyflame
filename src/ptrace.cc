@@ -48,7 +48,8 @@ int DoWait(pid_t pid, int options) {
       int signum = WSTOPSIG(status);
       if (signum == SIGTRAP) {
         break;
-      } else if (signum == SIGCHLD) {
+      }
+      if (signum == SIGCHLD) {
         PtraceCont(pid);  // see issue #122
         continue;
       }
@@ -111,9 +112,7 @@ void PtraceDetach(pid_t pid) {
 }
 
 // Like PtraceDetach(), but ignore errors.
-static inline void SafeDetach(pid_t pid) noexcept {
-  ptrace(PTRACE_DETACH, pid, 0, 0);
-}
+static void SafeDetach(pid_t pid) noexcept { ptrace(PTRACE_DETACH, pid, 0, 0); }
 
 void PtraceInterrupt(pid_t pid) {
   if (ptrace(PTRACE_INTERRUPT, pid, 0, 0)) {
@@ -259,7 +258,7 @@ static std::vector<pid_t> ListThreads(pid_t pid) {
   while ((entry = readdir(dir)) != nullptr) {
     std::string name = entry->d_name;
     if (name != "." && name != "..") {
-      result.push_back(static_cast<pid_t>(std::stoi(name)));
+      result.emplace_back(static_cast<pid_t>(std::stoi(name)));
     }
   }
   return result;
@@ -267,13 +266,17 @@ static std::vector<pid_t> ListThreads(pid_t pid) {
 
 static void PauseChildThreads(pid_t pid) {
   for (auto tid : ListThreads(pid)) {
-    if (tid != pid) PtraceAttach(tid);
+    if (tid != pid) {
+      PtraceAttach(tid);
+    }
   }
 }
 
 static void ResumeChildThreads(pid_t pid) {
   for (auto tid : ListThreads(pid)) {
-    if (tid != pid) PtraceDetach(tid);
+    if (tid != pid) {
+      PtraceDetach(tid);
+    }
   }
 }
 
@@ -287,7 +290,7 @@ long PtraceCallFunction(pid_t pid, unsigned long addr) {
     }
 
     long code = 0;
-    uint8_t *new_code_bytes = (uint8_t *)&code;
+    auto new_code_bytes = (uint8_t *)&code;
     new_code_bytes[0] = 0xff;  // CALL
     new_code_bytes[1] = 0xd0;  // rax
     new_code_bytes[2] = 0xcc;  // TRAP

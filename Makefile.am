@@ -11,3 +11,10 @@ clean-local:
 .PHONY: check
 check:
 	./runtests.sh -v
+
+.PHONY: tidy
+tidy:
+	clang-tidy\
+	  -p ./compile_commands.json\
+-checks='modernize*,performance*,readability*,-modernize-use-trailing-return-type,-readability-implicit-bool-conversion,-readability-magic-numbers,-modernize-avoid-c-arrays'\
+	  src/*.cc src/*.h

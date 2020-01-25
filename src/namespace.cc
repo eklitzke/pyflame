@@ -15,11 +15,11 @@
 #include "./namespace.h"
 
 #include <fcntl.h>
-#include <limits.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
 
+#include <climits>
 #include <cstring>
 #include <iostream>
 #include <sstream>
@@ -95,9 +95,8 @@ int Namespace::Open(const char *path) {
     int fd = open(path, O_RDONLY);
     SetNs(out_);
     return fd;
-  } else {
-    return open(path, O_RDONLY);
   }
+  return open(path, O_RDONLY);
 }
 
 Namespace::~Namespace() {

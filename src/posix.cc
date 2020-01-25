@@ -15,11 +15,11 @@
 #include "./posix.h"
 
 #include <fcntl.h>
-#include <limits.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
 
+#include <climits>
 #include <cstring>
 #include <sstream>
 
@@ -41,8 +41,8 @@ void Close(int fd) {
   if (fd < 0) {
     return;
   }
-  while (close(fd) == -1)
-    ;
+  while (close(fd) == -1) {
+  }
 }
 
 void Fstat(int fd, struct stat *buf) {
