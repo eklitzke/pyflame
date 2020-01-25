@@ -51,11 +51,6 @@ AC_CHECK_HEADERS([linux/ptrace.h], [], [AC_MSG_ERROR([Linux kernel headers missi
 
 AC_LANG_PUSH([C++])
 
-# Minimum C++ version is C++11
-AX_CHECK_COMPILE_FLAG(["-std=c++11"],
-                      [AX_APPEND_FLAG(["-std=c++11"], [CXXFLAGS])],
-                      [AC_MSG_ERROR([failed to detect C++11 support])])
-
 # Yes please.
 AX_APPEND_COMPILE_FLAGS([-Wall], [CXXFLAGS])
 
