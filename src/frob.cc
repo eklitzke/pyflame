@@ -24,6 +24,7 @@
 #endif
 
 #include <sys/types.h>
+
 #include <algorithm>
 #include <cstddef>
 #include <fstream>
@@ -308,5 +309,5 @@ std::vector<Thread> GetThreads(pid_t pid, PyAddresses addrs,
 
   return threads;
 }
-}  // namespace py*
+}  // namespace pyflame
 }  // namespace pyflame

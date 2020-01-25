@@ -48,7 +48,8 @@ static const char usage_str[] =
      "Common Options:\n"
 #ifdef ENABLE_THREADS
      "  --threads                Enable multi-threading support\n"
-     "  -d, --dump               Dump stacks from all threads (implies --threads)\n"
+     "  -d, --dump               Dump stacks from all threads (implies "
+     "--threads)\n"
 #else
      "  -d, --dump               Dump the current interpreter stack\n"
 #endif
@@ -111,9 +112,11 @@ typedef std::unordered_map<frames_t, size_t, FrameHash> buckets_t;
 // Prints all stack traces
 static void PrintFrames(std::ostream &out,
                         const std::vector<FrameTS> &call_stacks,
-                        size_t idle_count, size_t failed_count, bool include_line_number) {
+                        size_t idle_count, size_t failed_count,
+                        bool include_line_number) {
   // Choose function to print frame
-  print_frame_t print_frame_ = include_line_number ? print_frame : print_frame_without_line_number;
+  print_frame_t print_frame_ =
+      include_line_number ? print_frame : print_frame_without_line_number;
 
   if (idle_count) {
     out << "(idle) " << idle_count << "\n";
@@ -150,9 +153,11 @@ static void PrintFrames(std::ostream &out,
 
 // Prints all stack traces with timestamps
 static void PrintFramesTS(std::ostream &out,
-                          const std::vector<FrameTS> &call_stacks, bool include_line_number) {
+                          const std::vector<FrameTS> &call_stacks,
+                          bool include_line_number) {
   // Choose function to print frame
-  print_frame_t print_frame_ = include_line_number ? print_frame : print_frame_without_line_number;
+  print_frame_t print_frame_ =
+      include_line_number ? print_frame : print_frame_without_line_number;
 
   for (const auto &call_stack : call_stacks) {
     out << std::chrono::duration_cast<std::chrono::microseconds>(
@@ -445,7 +450,8 @@ int Prober::ProbeLoop(const PyFrob &frobber, std::ostream *out) {
 finish:
   if (!call_stacks.empty() || idle_count || failed_count) {
     if (!include_ts_) {
-      PrintFrames(*out, call_stacks, idle_count, failed_count, include_line_number_);
+      PrintFrames(*out, call_stacks, idle_count, failed_count,
+                  include_line_number_);
     } else {
       PrintFramesTS(*out, call_stacks, include_line_number_);
     }

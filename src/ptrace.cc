@@ -15,6 +15,12 @@
 #include "./ptrace.h"
 
 #include <dirent.h>
+#include <sys/mman.h>
+#include <sys/ptrace.h>
+#include <sys/syscall.h>
+#include <sys/user.h>
+#include <sys/wait.h>
+
 #include <cassert>
 #include <cerrno>
 #include <cstring>
@@ -24,12 +30,6 @@
 #include <stdexcept>
 #include <utility>
 #include <vector>
-
-#include <sys/mman.h>
-#include <sys/ptrace.h>
-#include <sys/syscall.h>
-#include <sys/user.h>
-#include <sys/wait.h>
 
 #include "./exc.h"
 

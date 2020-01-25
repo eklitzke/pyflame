@@ -16,7 +16,6 @@
 
 #include <elf.h>
 
-#include <limits.h>
 #include <sstream>
 #include <stdexcept>
 #include <string>

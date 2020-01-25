@@ -13,11 +13,12 @@
 // limitations under the License.
 
 #include "./aslr.h"
-#include "./exc.h"
 
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
+
+#include "./exc.h"
 
 namespace pyflame {
 // Find libpython2.7.so and its offset for an ASLR process
