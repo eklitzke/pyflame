@@ -18,30 +18,19 @@ export PYMAJORVERSION
 
 while getopts ":hvx" opt; do
   case $opt in
-    h)
-      echo "Usage: $0 [-h] [-x] python..."
-      exit 1
-      ;;
-    v)
-      VERBOSE=1
-      ;;
-    x)
-      set -x
-      ;;
-    \?)
-      echo "Invalid option: -$OPTARG" >&2
-      ;;
+    h) echo "Usage: $0 [-h] [-x] python..."; exit 1;;
+    v) VERBOSE=1;;
+    x) set -x;;
+    \?) echo "Invalid option: -$OPTARG" >&2; exit 1;;
   esac
 done
 
 shift "$((OPTIND-1))"
 
-exists() {
-  command -v "$1" &>/dev/null
-}
+exists() { command -v "$1" &>/dev/null; }
 
 pytest() {
-  if [ "$VERBOSE" -eq 0 ]; then
+  if [[ $VERBOSE -eq 0 ]]; then
     py.test -q "$@"
   else
     py.test -v "$@"
@@ -62,7 +51,7 @@ mkvenv() {
 # Run tests using pip; $1 = python version
 run_pip_tests() {
   local activated
-  if [ -z "${VIRTUAL_ENV}" ]; then
+  if [[ -z "${VIRTUAL_ENV}" ]]; then
     rm -rf "${ENVDIR}"
     mkvenv -q -p "$1" "${ENVDIR}" &>/dev/null
 
@@ -79,14 +68,14 @@ run_pip_tests() {
   find tests/ -name '*.pyc' -delete
   pip install -q pytest
   pytest -v tests/
-  if [ "$activated" -eq 1 ]; then
+  if [[ $activated -eq 1 ]]; then
     deactivate
   fi
 }
 
 # Make a best effort to run the tests against some Python version.
 try_pip_tests() {
-  if command -v "$1" &>/dev/null; then
+  if exists "$1"; then
     run_pip_tests "$1"
   else
     echo "skipping $1 tests (no such command)"
@@ -110,7 +99,7 @@ run_rpm_tests() {
   done
 }
 
-if [ $# -eq 0 ]; then
+if [[ $# -eq 0 ]]; then
   PYMAJORVERSION=2 try_pip_tests python2
   PYMAJORVERSION=3 try_pip_tests python3
 elif [ "$1" = "rpm" ]; then
